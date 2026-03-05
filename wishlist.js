@@ -1,38 +1,21 @@
-const API_URL = 'https://fakestoreapi.com/products?limit=20';
 const productGrid = document.getElementById('product-grid');
-const searchInput = document.getElementById('search-input');
-const sortSelect = document.getElementById('sort-select');
-const categorySelect = document.getElementById('category-select');
-const loader = document.getElementById('loader');
 const walletBalanceDisplay = document.getElementById('wallet-balance');
 const cartCountDisplay = document.getElementById('cart-count');
 const wishlistCountDisplay = document.getElementById('wishlist-count');
 const themeToggle = document.getElementById('theme-toggle');
 
-let products = [];
-let filteredProducts = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 let walletBalance = parseFloat(localStorage.getItem('walletBalance')) || 500.00;
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
 
-/**
- * Initialize the application
- */
-async function init() {
+function init() {
     applyTheme();
     updateUI();
-    try {
-        await fetchProducts();
-        setupEventListeners();
-    } catch (error) {
-        showError('Boutique experience currently unavailable. Please refresh.');
-    }
+    renderWishlist();
+    setupEventListeners();
 }
 
-/**
- * Theme Management
- */
 function applyTheme() {
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
@@ -49,9 +32,6 @@ function toggleTheme() {
     applyTheme();
 }
 
-/**
- * Update global UI indicators
- */
 function updateUI() {
     if (walletBalanceDisplay) walletBalanceDisplay.textContent = `$${walletBalance.toFixed(2)}`;
 
@@ -59,51 +39,34 @@ function updateUI() {
     if (cartCountDisplay) cartCountDisplay.textContent = totalQty;
     if (wishlistCountDisplay) wishlistCountDisplay.textContent = wishlist.length;
 
-    // Persist
     localStorage.setItem('cart', JSON.stringify(cart));
-    localStorage.setItem('walletBalance', walletBalance.toString());
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
 }
 
-/**
- * Fetch products from API
- */
-async function fetchProducts() {
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error('API Error');
-
-    products = await response.json();
-    if (loader) loader.style.display = 'none';
-    applyFilters();
-}
-
-/**
- * Render product cards with Luxury Styling
- */
-function renderProducts(items) {
+function renderWishlist() {
     productGrid.innerHTML = '';
 
-    if (items.length === 0) {
+    if (wishlist.length === 0) {
         productGrid.innerHTML = `
-            <div class="error-msg" style="grid-column: 1/-1; background: var(--bg-color); border: none; color: var(--text-muted);">
-                <h3 style="letter-spacing: 0.2em; font-weight: 300;">NO PIECES FOUND</h3>
-                <p style="margin-top: 1rem; opacity: 0.6;">Your search did not return any matches from our collection.</p>
+            <div class="error-msg" style="grid-column: 1/-1; background: transparent; border: none; text-align: left; padding: 4rem 0;">
+                <h3 style="font-size: 2rem; font-weight: 300; letter-spacing: 0.1em; color: var(--text-main);">YOUR WISHLIST IS EMPTY</h3>
+                <p style="margin-top: 1rem; opacity: 0.6; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em;">Save your favorite pieces here.</p>
+                <a href="shop.html" class="buy-now-btn" style="display: inline-block; margin-top: 2rem; text-decoration: none; width: auto; padding: 1.2rem 3rem;">Start Exploring</a>
             </div>
         `;
         return;
     }
 
-    items.forEach(product => {
-        const isWishlisted = wishlist.some(item => item.id === product.id);
+    wishlist.forEach(product => {
         const card = document.createElement('div');
         card.className = 'product-card';
 
         const stars = '★'.repeat(Math.round(product.rating.rate)) + '☆'.repeat(5 - Math.round(product.rating.rate));
 
         card.innerHTML = `
-            <div class="card-header-actions">
-                <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist(event, ${product.id})" title="Wishlist">
-                    ${isWishlisted ? '❤️' : '🤍'}
+            <div class="card-header-actions" style="opacity: 1; transform: translateX(0);">
+                <button class="wishlist-btn active" onclick="removeFromWishlist(event, ${product.id})" title="Remove Selection">
+                    ❤️
                 </button>
             </div>
             <div class="image-container" onclick="navigateToProduct(${product.id})">
@@ -130,19 +93,12 @@ function navigateToProduct(id) {
     window.location.href = `product.html?id=${id}`;
 }
 
-window.toggleWishlist = function (event, id) {
+window.removeFromWishlist = function (event, id) {
     event.stopPropagation();
-    const index = wishlist.findIndex(item => item.id === id);
-    if (index > -1) {
-        wishlist.splice(index, 1);
-        showToast('Selection removed');
-    } else {
-        const product = products.find(p => p.id === id);
-        wishlist.push(product);
-        showToast('Selection saved ❤️');
-    }
+    wishlist = wishlist.filter(item => item.id !== id);
     updateUI();
-    applyFilters();
+    renderWishlist();
+    showToast('Selection removed');
 };
 
 function showToast(message) {
@@ -161,45 +117,21 @@ function showToast(message) {
 
 window.addToCart = function (event, id) {
     event.stopPropagation();
-    const existingItem = cart.find(item => item.id === id);
+    const product = wishlist.find(p => p.id === id);
+    if (!product) return;
 
+    const existingItem = cart.find(item => item.id === id);
     if (existingItem) {
         existingItem.quantity = (existingItem.quantity || 1) + 1;
     } else {
-        const product = products.find(p => p.id === id);
-        if (product) {
-            cart.push({ ...product, quantity: 1 });
-        }
+        cart.push({ ...product, quantity: 1 });
     }
 
     updateUI();
-    showToast('Added to your bag 🛍️');
+    showToast('Added to bag 🛍️');
 };
 
-function applyFilters() {
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    const category = categorySelect.value;
-    const sortBy = sortSelect.value;
-
-    filteredProducts = products.filter(product => {
-        const matchesSearch = product.title.toLowerCase().includes(searchTerm);
-        const matchesCategory = category === 'all' || product.category === category;
-        return matchesSearch && matchesCategory;
-    });
-
-    if (sortBy === 'low-high') {
-        filteredProducts.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'high-low') {
-        filteredProducts.sort((a, b) => b.price - a.price);
-    }
-
-    renderProducts(filteredProducts);
-}
-
 function setupEventListeners() {
-    if (searchInput) searchInput.addEventListener('input', applyFilters);
-    if (categorySelect) categorySelect.addEventListener('change', applyFilters);
-    if (sortSelect) sortSelect.addEventListener('change', applyFilters);
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 }
 

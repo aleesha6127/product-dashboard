@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique Wallet | Aura Luxe</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .wallet-card {
+            background: var(--accent-dark);
+            color: white;
+            padding: 4rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(197, 160, 89, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .wallet-card h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .balance-amount {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+        }
+
+        .topup-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .topup-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .topup-input:focus {
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .topup-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.8rem;
+        }
+
+        .topup-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+
+        .history-section {
+            margin-top: 6rem;
+            padding-bottom: 8rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-align: center;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            border-color: var(--primary-color);
+            transform: translateX(10px);
+        }
+
+        .history-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .order-id {
+            font-family: monospace;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .history-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ef4444;
+        }
+
+        /* Order Details Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .modal-backdrop.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--text-main);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .modal-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .order-items-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+
+        .order-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .order-item-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .order-item-total {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .modal-footer {
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-footer h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .modal-footer p {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">
+                    <h1>Aura<span>Luxe</span></h1>
+                </a>
+
+                <div class="nav-controls">
+                    <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">🌓</button>
+
+                    <a href="wishlist.html" class="cart-btn" title="View Wishlist">
+                        <span class="icon">🤍</span>
+                        <span id="wishlist-count" class="cart-count">0</span>
+                    </a>
+
+                    <a href="cart.html" class="cart-btn">
+                        <span class="icon">🛒</span>
+                        <span id="cart-count" class="cart-count">0</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="wallet-card">
+                <h3>Boutique Balance</h3>
+                <div class="balance-amount" id="wallet-balance-large">$0.00</div>
+
+                <div class="topup-section">
+                    <input type="number" id="topup-amount" class="topup-input" placeholder="Amount" min="1">
+                    <button id="topup-btn" class="topup-btn">Refill Bag</button>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <h3 class="section-title">Purchase History</h3>
+                <div id="purchase-history">
+                    <!-- History items will be injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Order Details Modal -->
+    <div id="order-details-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div class="modal-header">
+                <h2 id="modal-order-id">Order Details</h2>
+                <p id="modal-order-date"></p>
+            </div>
+            <div id="modal-items-list" class="order-items-list">
+                <!-- Items will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <h3>Total Amount</h3>
+                <p id="modal-total-amount">$0.00</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="wallet.js"></script>
+</body>
+
+</html>

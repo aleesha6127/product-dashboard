@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | Aura Luxe</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            background: var(--card-bg);
+            padding: 4rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            margin-top: 4rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .details-image-container {
+            background: #fff;
+            padding: 4rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 4/5;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .details-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .details-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .details-category {
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: 0.3em;
+            font-size: 0.8rem;
+        }
+
+        .details-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .details-rating {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .details-price {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--text-main);
+        }
+
+        .details-description {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 500px;
+        }
+
+        .details-actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .details-add-btn {
+            padding: 1.5rem 4rem;
+            font-size: 0.9rem;
+            border-radius: var(--radius-md);
+            background: var(--accent-dark);
+            color: white;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .details-add-btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.3);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--primary-color);
+            transform: translateX(-5px);
+        }
+
+        .details-wishlist-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        @media (max-width: 992px) {
+            .product-details {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+                padding: 2rem;
+            }
+
+            .details-content {
+                text-align: center;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">
+                    <h1>Aura<span>Luxe</span></h1>
+                </a>
+
+                <div class="nav-controls">
+                    <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">🌓</button>
+
+                    <a href="wishlist.html" class="cart-btn" title="View Wishlist">
+                        <span class="icon">🤍</span>
+                        <span id="wishlist-count" class="cart-count">0</span>
+                    </a>
+
+                    <div class="wallet-display">
+                        <span class="icon">💰</span>
+                        <span id="wallet-balance">$0.00</span>
+                    </div>
+
+                    <a href="cart.html" class="cart-btn">
+                        <span class="icon">🛒</span>
+                        <span id="cart-count" class="cart-count">0</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="shop.html" class="back-btn">← Back to Dashboard</a>
+
+            <div id="loader" class="loading-container">
+                <div class="spinner"></div>
+            </div>
+
+            <div id="product-details-container">
+                <!-- Product details will be injected here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="product.js"></script>
+</body>
+
+</html>

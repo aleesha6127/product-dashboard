@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bag | Aura Luxe</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">
+                    <h1>Aura<span>Luxe</span></h1>
+                </a>
+
+                <div class="nav-controls">
+                    <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">🌓</button>
+
+                    <a href="wishlist.html" class="cart-btn" title="View Wishlist">
+                        <span class="icon">🤍</span>
+                        <span id="wishlist-count" class="cart-count">0</span>
+                    </a>
+
+                    <div class="wallet-display">
+                        <span class="icon">💰</span>
+                        <span id="wallet-balance">$0.00</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="header-content" style="padding: 4rem 0;">
+                <p>Checkout</p>
+                <h2>YOUR SELECTIONS</h2>
+            </div>
+
+            <div class="cart-container">
+                <div class="cart-items-section" id="cart-items">
+                    <!-- Cart items will be injected here -->
+                </div>
+
+                <div class="summary-section">
+                    <h3 class="summary-title">Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="items-total">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Complimentary Shipping</span>
+                        <span style="color: var(--primary-color);">FREE</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="order-total">$0.00</span>
+                    </div>
+
+                    <div id="wallet-warning" class="wallet-warning">
+                        ⚠️ Insufficient balance in your boutique wallet.
+                    </div>
+
+                    <button class="buy-now-btn" id="buy-now-btn">Complete Purchase</button>
+                    <p
+                        style="text-align: center; margin-top: 2rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">
+                        Secure Transaction • Aura Luxe Boutique
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="cart.js"></script>
+</body>
+
+</html>
